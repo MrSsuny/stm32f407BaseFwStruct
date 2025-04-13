@@ -41,13 +41,17 @@ bool uartOpen(uint8_t ch, uint32_t baud)
       break;
     case _DEF_UART2:
       huart1.Instance = USART1;
-      huart1.Init.BaudRate = 115200;
+      huart1.Init.BaudRate = baud;
       huart1.Init.WordLength = UART_WORDLENGTH_8B;
       huart1.Init.StopBits = UART_STOPBITS_1;
       huart1.Init.Parity = UART_PARITY_NONE;
       huart1.Init.Mode = UART_MODE_TX_RX;
       huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
       huart1.Init.OverSampling = UART_OVERSAMPLING_16;
+
+      //기존에 open 되어있었는데 다시 속도를 바꿔서 오픈하는 경우
+      HAL_UART_DeInit(&huart1);
+
 
       qbufferCreate(&qbuffer[ch], rx_buf,256);
 
@@ -71,7 +75,7 @@ bool uartOpen(uint8_t ch, uint32_t baud)
         is_open[ch] = true;
 
         //DMA 일때 이걸로
-        if(HAL_UART_Receive_DMA(&huart1, (uint8_t *)&rx_buf[_DEF_UART2],256) != HAL_OK)
+        if(HAL_UART_Receive_DMA(&huart1, (uint8_t *)&rx_buf[0],256) != HAL_OK)
         {
           ret = false;
         }
@@ -135,11 +139,17 @@ uint32_t uartWrite(uint8_t ch, uint8_t *p_data,uint32_t length)
       break;
     case _DEF_UART2:
       status = HAL_UART_Transmit(&huart1, p_data, length, 100);
-      //HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
       if(status == HAL_OK)
       {
         ret = length;
       }
+      break;
+    case _DEF_UART3:
+      for(uint32_t i = 0; i < length; i++)
+      {
+        ITM_SendChar(p_data[i]);
+      }
+      ret = length;
       break;
   }
 
@@ -167,6 +177,8 @@ uint32_t uartGetBaud(uint8_t ch)
     case _DEF_UART1:
       ret = cdcGetBaud();
       break;
+    case _DEF_UART2:
+      ret = huart1.Init.BaudRate;
   }
   return ret;
 }

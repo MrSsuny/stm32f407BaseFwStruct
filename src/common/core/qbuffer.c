@@ -81,7 +81,7 @@ bool qbufferRead(qbuffer_t *p_node, uint8_t *p_data, uint32_t length)
 }
 uint32_t qbufferAvailable(qbuffer_t *p_node)
 {
-  return (p_node->in - p_node->out) % p_node->len;
+    return (p_node->in - p_node->out) % p_node->len;
 }
 void     qbufferFlush(qbuffer_t *p_node)
 {

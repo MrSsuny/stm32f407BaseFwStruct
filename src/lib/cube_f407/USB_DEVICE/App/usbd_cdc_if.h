@@ -109,6 +109,12 @@ uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len);
 
 /* USER CODE BEGIN EXPORTED_FUNCTIONS */
 
+uint32_t cdcAvailable(void);
+uint8_t cdcRead(void);
+void cdcDatatIn(uint8_t rx_data);
+uint32_t cdcWrite(uint8_t *p_data, uint32_t length);
+uint32_t cdcGetBaud(void);
+uint8_t USBD_CDC_SOF(struct _USBD_HandleTypeDef *pdev);
 /* USER CODE END EXPORTED_FUNCTIONS */
 
 /**

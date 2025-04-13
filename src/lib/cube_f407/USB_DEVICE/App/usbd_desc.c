@@ -322,7 +322,14 @@ uint8_t * USBD_FS_SerialStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
    * ID */
   Get_SerialNum();
   /* USER CODE BEGIN USBD_FS_SerialStrDescriptor */
-//
+  static uint8_t USBD_StringSerial[] = {
+      26,
+      USB_DESC_TYPE_STRING,
+      '1',0,'2','3',0,'4',0,
+      '5',0,'6','7',0,'8',0,
+      'A',0,'B','C',0,'D',0
+  };
+  *length = sizeof(USBD_StringSerial);
   /* USER CODE END USBD_FS_SerialStrDescriptor */
   return (uint8_t *) USBD_StringSerial;
 }

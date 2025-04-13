@@ -13,7 +13,7 @@
 
 
 void bspInit(void);
-
+void debugInit(void);
 void delay(uint32_t ms);
 uint32_t millis(void);
 

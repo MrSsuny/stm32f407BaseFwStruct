@@ -35,6 +35,7 @@ uint32_t rx_in  = 0;
 uint32_t rx_out = 0;
 uint32_t rx_len = 512;
 uint8_t rx_buf[512];
+bool rx_full = false;
 
 uint32_t cdcAvailable(void)
 {
@@ -63,9 +64,9 @@ void cdcDatatIn(uint8_t rx_data)
   next_rx_in = (rx_in + 1) % rx_len;
 
   if(next_rx_in != rx_out)
-    {
-      rx_in = next_rx_in;
-    }
+  {
+    rx_in = next_rx_in;
+  }
 }
 
 uint32_t cdcWrite(uint8_t *p_data, uint32_t length)
@@ -96,6 +97,42 @@ uint32_t cdcGetBaud(void)
 {
   return LineCoding.bitrate;
 }
+uint32_t sof_count = 0;
+
+uint8_t USBD_CDC_SOF(struct _USBD_HandleTypeDef *pdev)
+{
+  //sof_count++;
+  if(rx_full == true)
+  {
+    uint32_t buf_len;
+     //수신 법퍼에서 비어있는 데이터 양
+     buf_len = (rx_len - cdcAvailable()) - 1;
+     if(buf_len >= USB_FS_MAX_PACKET_SIZE)
+     {
+       //다음 데이터 보내줘
+       //USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]); //이거는 한번만 해주면됨
+       USBD_CDC_ReceivePacket(pdev);
+       rx_full = false;
+     }
+     else
+     {
+       //버퍼 용량이 >>>>>부족하니, 기다려라..
+       rx_full = true;
+     }
+
+  }
+  return 0;
+}
+//void HAL_PCD_SOFCallback(PCD_HandleTypeDef *hpcd)
+//{
+//  sof_count = sof_count  + 2;
+//  /* Prevent unused argument(s) compilation warning */
+//  //UNUSED(hpcd);
+//
+//  /* NOTE : This function should not be modified, when the callback is needed,
+//            the HAL_PCD_SOFCallback could be implemented in the user file
+//   */
+//}
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -346,12 +383,29 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
 static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 6 */
-  USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
-  USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+  //보낸 Data를 cdcDataIn 함수로 내가 만든 버퍼에 쓱고
   for(int i = 0;i < *Len;i++)
   {
     cdcDatatIn(Buf[i]);
   }
+  //Buffer에 쓸수있는 빈공간(남아있는 공간이 얼마나 되는지 계산)
+  uint32_t buf_len;
+  //수신 법퍼에서 비어있는 데이터 양
+  buf_len = (rx_len - cdcAvailable()) - 1;
+  if(buf_len >= USB_FS_MAX_PACKET_SIZE)
+  {
+    //다음 데이터 보내줘
+    USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
+    USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+  }
+  else
+  {
+    //버퍼 용량이 부족하니, 기다려라..
+    rx_full = true;
+  }
+
+
+
   return (USBD_OK);
   /* USER CODE END 6 */
 }
