@@ -14,6 +14,7 @@ bool usbInit(void)
 {
   bool ret = true;
 
+  //bspInit 에서 먼저 Low로 깔아줌
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   GPIO_InitStruct.Pin = GPIO_PIN_12;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
@@ -21,8 +22,8 @@ bool usbInit(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  HAL_GPIO_WritePin(GPIOA,GPIO_PIN_12,GPIO_PIN_RESET);
-  delay(100);
+  HAL_GPIO_WritePin(GPIOA,GPIO_PIN_12,GPIO_PIN_RESET);// 초기에 Low 로 내려주면됨
+  delay(200);
   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_12,GPIO_PIN_SET);
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
 
