@@ -148,6 +148,7 @@ uint32_t uartWrite(uint8_t ch, uint8_t *p_data,uint32_t length)
       for(uint32_t i = 0; i < length; i++)
       {
         ITM_SendChar(p_data[i]);
+        delay(1);
       }
       ret = length;
       break;

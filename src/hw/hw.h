@@ -15,6 +15,8 @@
 #include "usb.h"
 #include "rtc.h"
 #include "reset.h"
+#include "debug.h"
+#include "flash.h"
 
 void hwInit(void);
 
