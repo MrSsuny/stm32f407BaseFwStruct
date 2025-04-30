@@ -17,6 +17,8 @@
 #include "reset.h"
 #include "debug.h"
 #include "flash.h"
+#include "cli.h"
+
 
 void hwInit(void);
 

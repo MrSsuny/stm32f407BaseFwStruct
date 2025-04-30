@@ -12,7 +12,9 @@ void hwInit(void)
 {
   bspInit();
   debugInit();
+  cliInit();
   rtcInit();
+
 
   resetInit();
   ledInit();
