@@ -65,10 +65,10 @@
 #define USBD_VID     1155
 #define USBD_LANGID_STRING     1033
 #define USBD_MANUFACTURER_STRING     "STMicroelectronics"
-#define USBD_PID_FS     22336
-#define USBD_PRODUCT_STRING_FS     "STM32 Virtual ComPort"
-#define USBD_CONFIGURATION_STRING_FS     "CDC Config"
-#define USBD_INTERFACE_STRING_FS     "CDC Interface"
+#define USBD_PID_FS     57105
+#define USBD_PRODUCT_STRING_FS     "STM32 DownLoad Firmware Update"
+#define USBD_CONFIGURATION_STRING_FS     "DFU Config"
+#define USBD_INTERFACE_STRING_FS     "DFU Interface"
 
 #define USB_SIZ_BOS_DESC            0x0C
 
@@ -164,8 +164,8 @@ __ALIGN_BEGIN uint8_t USBD_FS_DeviceDesc[USB_LEN_DEV_DESC] __ALIGN_END =
   0x00,                       /*bcdUSB */
 #endif /* (USBD_LPM_ENABLED == 1) */
   0x02,
-  0x02,                       /*bDeviceClass*/
-  0x02,                       /*bDeviceSubClass*/
+  0x00,                       /*bDeviceClass*/
+  0x00,                       /*bDeviceSubClass*/
   0x00,                       /*bDeviceProtocol*/
   USB_MAX_EP0_SIZE,           /*bMaxPacketSize*/
   LOBYTE(USBD_VID),           /*idVendor*/
@@ -322,14 +322,7 @@ uint8_t * USBD_FS_SerialStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
    * ID */
   Get_SerialNum();
   /* USER CODE BEGIN USBD_FS_SerialStrDescriptor */
-  static uint8_t USBD_StringSerial[] = {
-      26,
-      USB_DESC_TYPE_STRING,
-      '1',0,'2','3',0,'4',0,
-      '5',0,'6','7',0,'8',0,
-      'A',0,'B','C',0,'D',0
-  };
-  *length = sizeof(USBD_StringSerial);
+
   /* USER CODE END USBD_FS_SerialStrDescriptor */
   return (uint8_t *) USBD_StringSerial;
 }
@@ -397,6 +390,10 @@ static void Get_SerialNum(void)
   uint32_t deviceserial0;
   uint32_t deviceserial1;
   uint32_t deviceserial2;
+
+  deviceserial0 = *(uint32_t *) DEVICE_ID1;
+  deviceserial1 = *(uint32_t *) DEVICE_ID2;
+  deviceserial2 = *(uint32_t *) DEVICE_ID3;
 
   deviceserial0 += deviceserial2;
 

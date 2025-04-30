@@ -27,7 +27,7 @@ bool usbInit(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
 
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
+  delay(200);
 
   MX_USB_DEVICE_Init();
 

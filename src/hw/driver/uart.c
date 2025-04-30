@@ -10,7 +10,7 @@
 #include "cdc.h"
 #include "qbuffer.h"
 
-
+#ifdef _USE_HW_UART
 //여기서만 사용되는 변수는 static으로 하는게 좋다.
 static bool is_open[UART_MAX_CH];
 
@@ -320,3 +320,4 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
   /* USER CODE END USART1_MspDeInit 1 */
   }
 }
+#endif

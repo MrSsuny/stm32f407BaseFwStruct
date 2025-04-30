@@ -7,7 +7,7 @@
 
 #include "debug.h"
 
-
+#ifdef _USE_DEBUG_STLINK
 static char buffer[DEBUG_BUFFER_SIZE];
 
 
@@ -31,3 +31,4 @@ void debugPrint(const char *fmt, ...)
     ITM_SendChar(buffer[i]);
   }
 }
+#endif

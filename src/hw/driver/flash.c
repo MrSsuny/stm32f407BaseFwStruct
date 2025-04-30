@@ -19,7 +19,7 @@ typedef struct
 
 //내부에서 사용하는 함수임으로 다른 모듈에서 사용하지 못하도록 static으로 막는다.
 static bool flashInSector(int16_t sector_num, uint32_t addr, uint32_t length);
-static uint32_t GetSector(uint32_t Address);
+uint32_t GetSector(uint32_t Address);
 
 //const 로 하면 ram을 사용안할수 있다. flash_tbl_t flash_tbl[FLASH_SECTOR_MAX];
 static flash_tbl_t flash_tbl[FLASH_SECTOR_MAX] =
@@ -160,23 +160,23 @@ bool flashInSector(int16_t sector_num, uint32_t addr, uint32_t length)
 }
 
 
-//uint32_t GetSector(uint32_t Address)
-//{
-//  if (Address < 0x08004000 && Address >=0x8000000) return FLASH_SECTOR_0;
-//  else if (Address < 0x08008000) return FLASH_SECTOR_1;
-//  else if (Address < 0x0800C000) return FLASH_SECTOR_2;
-//  else if (Address < 0x08010000) return FLASH_SECTOR_3;
-//  else if (Address < 0x08020000) return FLASH_SECTOR_4;
-//  else if (Address < 0x08040000) return FLASH_SECTOR_5;
-//  else if (Address < 0x08060000) return FLASH_SECTOR_6;
-//  else if (Address < 0x08080000) return FLASH_SECTOR_7;
-//  else if (Address < 0x080A0000) return FLASH_SECTOR_8;
-//  else if (Address < 0x080C0000) return FLASH_SECTOR_9;
-//  else if (Address < 0x080E0000) return FLASH_SECTOR_10;
-//  else if (Address < 0x08100000) return FLASH_SECTOR_11;
-//  else
-//  {
-//    while(1);
-//    return 0;
-//  }
-//}
+uint32_t GetSector(uint32_t Address)
+{
+  if (Address < 0x08004000 && Address >=0x8000000) return FLASH_SECTOR_0;
+  else if (Address < 0x08008000) return FLASH_SECTOR_1;
+  else if (Address < 0x0800C000) return FLASH_SECTOR_2;
+  else if (Address < 0x08010000) return FLASH_SECTOR_3;
+  else if (Address < 0x08020000) return FLASH_SECTOR_4;
+  else if (Address < 0x08040000) return FLASH_SECTOR_5;
+  else if (Address < 0x08060000) return FLASH_SECTOR_6;
+  else if (Address < 0x08080000) return FLASH_SECTOR_7;
+  else if (Address < 0x080A0000) return FLASH_SECTOR_8;
+  else if (Address < 0x080C0000) return FLASH_SECTOR_9;
+  else if (Address < 0x080E0000) return FLASH_SECTOR_10;
+  else if (Address < 0x08100000) return FLASH_SECTOR_11;
+  else
+  {
+    while(1);
+    return 0;
+  }
+}
